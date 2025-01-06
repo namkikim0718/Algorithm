@@ -2,37 +2,27 @@ import java.util.*;
 
 class Solution {
     public int[] solution(int n, String[] words) {
-        int[] answer = {0, 0};
-        Stack<String> stack = new Stack<>();
+        int[] answer = new int[2];
         
-        for (int i = 0; i < words.length; i++) {
-            if (!stack.isEmpty()) {
-                if (!stack.contains(words[i])) {
-                    String before = stack.peek();
-                    
-                    if (before.charAt(before.length()-1) != words[i].charAt(0)) {
-                        if (i % n == n - 1) {
-                            answer[0] = n;
-                        } else {
-                            answer[0] = i % n + 1;
-                        }
-                        answer[1] = i / n + 1;
-                        break;
-                    } else {
-                        stack.push(words[i]);
-                    }
-                } else {
-                    if (i % n == n - 1) {
-                            answer[0] = n;
-                        } else {
-                            answer[0] = i % n + 1;
-                        }
-                        answer[1] = i / n + 1;
-                        break;
-                }
-            } else {
-                stack.push(words[i]);
+        Set<String> set = new HashSet<>();
+        set.add(words[0]);
+
+        for (int i = 1; i < words.length; i++) {
+            String now = words[i];
+            String before = words[i-1];
+            
+            if (before.charAt(before.length() - 1) != now.charAt(0)) {
+                answer[0] = i % n + 1;
+                answer[1] = i / n + 1;
+                break;
             }
+            
+            if (set.contains(now)) {
+                answer[0] = i % n + 1;
+                answer[1] = i / n + 1;
+                break;
+            }
+            set.add(now);
         }
 
         return answer;
