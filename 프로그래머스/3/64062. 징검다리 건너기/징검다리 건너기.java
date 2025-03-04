@@ -1,35 +1,38 @@
 import java.util.*;
 
 class Solution {
-    public static boolean check(int[] stones, int k, int mid) {
-        int cnt = 0;
-        for (int i = 0; i < stones.length; i++) {
-            if (stones[i] < mid) {
-                cnt++;
-                if (cnt >= k) {
-                    return false;
-                }
-            } else {
-                cnt = 0;
-            }
-        }
-        return true;
-    }
-    
     public int solution(int[] stones, int k) {
-        int min = 0;
-        int max = Integer.MAX_VALUE;
-        int answer = 0;
         
-        while (min <= max) {
-            int mid = (min + max) / 2;
-            if (check(stones, k, mid)) {
-                min = mid + 1;
+        int answer = 0;
+        int left = 1;
+        int right = Arrays.stream(stones).max().getAsInt();
+        
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            
+            boolean isAvailable = true;
+            int jumpCnt = 0;
+            
+            for (int stone : stones) {
+                if (stone < mid) {
+                    jumpCnt++;
+                    if (jumpCnt >= k) {
+                        isAvailable = false;
+                        break;
+                    }
+                } else {
+                    jumpCnt = 0;
+                }
+            }
+            
+            if (isAvailable) {
                 answer = mid;
+                left = mid + 1;
             } else {
-                max = mid - 1;
+                right = mid - 1;
             }
         }
+        
         
         return answer;
     }
