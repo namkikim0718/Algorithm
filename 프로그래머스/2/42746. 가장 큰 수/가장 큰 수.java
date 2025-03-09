@@ -3,19 +3,18 @@ import java.util.*;
 class Solution {
     public String solution(int[] numbers) {
         
-        List<String> numStrs = new ArrayList<>();
+        int n = numbers.length;
+        String[] numStrs = new String[n];
         
-        for (int number : numbers) {
-            numStrs.add(String.valueOf(number));
+        for (int i = 0; i < n; i++) {
+            numStrs[i] = String.valueOf(numbers[i]);
         }
         
-        Collections.sort(numStrs, (a, b) -> {
-           return (b + a).compareTo(a + b);
+        Arrays.sort(numStrs, (a, b) -> {
+            return (b+a).compareTo(a+b);
         });
         
-        if (numStrs.get(0).equals("0")) {
-            return "0";
-        }
+        if (numStrs[0].equals("0")) return "0";
         
         StringBuilder sb = new StringBuilder();
         for (String numStr : numStrs) {
