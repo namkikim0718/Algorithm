@@ -10,19 +10,17 @@ class Solution {
     }
     
     public int solution(int n, int[][] costs) {
-        // MST 알고리즘(유니온 파인드)
+        int answer = 0;
         
-        Arrays.sort(costs, (a, b) -> {
-            return a[2] - b[2];
-        });
-        
+        // 최소 신장 트리
         int[] parent = new int[n];
         for (int i = 0; i < n; i++) {
             parent[i] = i;
         }
         
-        int totalCost = 0;
-        int edgeCnt = 0;
+        Arrays.sort(costs, (a, b) -> {
+            return a[2] - b[2];
+        });
         
         for (int[] cost : costs) {
             int from = cost[0];
@@ -33,16 +31,11 @@ class Solution {
             int parentTo = findParent(parent, to);
             
             if (parentFrom != parentTo) {
-                parent[parentTo] = parentFrom;
-                totalCost += nowCost;
-                edgeCnt++;
-            }
-            
-            if (edgeCnt == n - 1) {
-                break;
+                parent[parentFrom] = parent[parentTo];
+                answer += nowCost;
             }
         }
         
-        return totalCost;
+        return answer;
     }
 }
