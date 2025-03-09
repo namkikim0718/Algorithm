@@ -11,9 +11,10 @@ class Solution {
         
         long left = 1;
         long right = n * maxTime;
+        long mid = (left + right) / 2;
         
         while (left <= right) {
-            long mid = (left + right) / 2;
+            mid = (left + right) / 2;
             
             long availableCnt = 0;
             for (int time : times) {
