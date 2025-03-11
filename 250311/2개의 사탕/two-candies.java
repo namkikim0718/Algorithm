@@ -10,24 +10,15 @@ public class Main {
     static int M;
     static int minCnt = Integer.MAX_VALUE;
 
-    static void dfs (int cnt, char[][] graph) {
+    static void dfs (int cnt, char[][] graph, int redX, int redY, int blueX, int blueY) {
         if (cnt > 10) return;
 
         // 배열 복사
         char[][] newGraph = new char[N][M];
-        int[] red = new int[2];
-        int[] blue = new int[2];
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < M; j++) {
                 newGraph[i][j] = graph[i][j];
-                if (graph[i][j] == 'B') {
-                    blue[0] = i;
-                    blue[1] = j;
-                }
-                if (graph[i][j] == 'R') {
-                    red[0] = i;
-                    red[1] = j;
-                }
+                
             }
         }
 
@@ -36,18 +27,18 @@ public class Main {
 
         for (int i = 0; i < 4; i++) {
             // 다음 빨간사탕 위치 찾기
-            int nextRedX = red[0];
-            int nextRedY = red[1];
-            while (nextRedX + dx[i] >= 0 && nextRedX + dx[i] < N && nextRedY + dy[i] >= 0 && nextRedY + dy[i] < M && newGraph[nextRedX + dx[i]][nextRedY + dy[i]] != '#') {
+            int nextRedX = redX;
+            int nextRedY = redY;
+            while (newGraph[nextRedX + dx[i]][nextRedY + dy[i]] != '#') {
                 nextRedX += dx[i];
                 nextRedY += dy[i];
                 if (newGraph[nextRedX][nextRedY] == 'O') break;
             }
 
             // 다음 파란사탕 위치 찾기
-            int nextBlueX = blue[0];
-            int nextBlueY = blue[1];
-            while (nextBlueX + dx[i] >= 0 && nextBlueX + dx[i] < N && nextBlueY + dy[i] >= 0 && nextBlueY + dy[i] < M && newGraph[nextBlueX+dx[i]][nextBlueY+dy[i]] != '#') {
+            int nextBlueX = blueX;
+            int nextBlueY = blueY;
+            while (newGraph[nextBlueX+dx[i]][nextBlueY+dy[i]] != '#') {
                 nextBlueX += dx[i];
                 nextBlueY += dy[i];
                 if (newGraph[nextBlueX][nextBlueY] == 'O') break;
@@ -56,15 +47,15 @@ public class Main {
 
             if (newGraph[nextBlueX][nextBlueY] == 'O') continue;
             if (newGraph[nextRedX][nextRedY] == 'O') {
-                minCnt = Math.min(minCnt, cnt + 1);
+                minCnt = Math.min(minCnt, cnt);
                 return;
             }
             // 아무것도 이동 안했으면 건너뜀
-            if (red[0] == nextRedX && red[1] == nextRedY && blue[0] == nextBlueX && blue[1] == nextBlueY) continue;
+            if (redX == nextRedX && redY == nextRedY && blueX == nextBlueX && blueY == nextBlueY) continue;
             // 두 사탕 겹쳐도 안되고, 파란색이 O와 만나도 안되고
             if (nextRedX == nextBlueX && nextRedY == nextBlueY) {
-                int redDist = Math.abs(nextRedX - red[0]) + Math.abs(nextRedY - red[1]);
-                int blueDist = Math.abs(nextBlueX - blue[0]) + Math.abs(nextBlueY - blue[1]);
+                int redDist = Math.abs(nextRedX - redX) + Math.abs(nextRedY - redY);
+                int blueDist = Math.abs(nextBlueX - blueX) + Math.abs(nextBlueY - blueY);
 
                 if (redDist > blueDist) {
                     nextRedX -= dx[i];
@@ -75,16 +66,7 @@ public class Main {
                 }
             }
             
-
-            newGraph[red[0]][red[1]] = '.';
-            newGraph[blue[0]][blue[1]] = '.';
-            newGraph[nextRedX][nextRedY] = 'R';
-            newGraph[nextBlueX][nextBlueY] = 'B';
-            dfs(cnt + 1, newGraph);
-            newGraph[red[0]][red[1]] = 'R';
-            newGraph[blue[0]][blue[1]] = 'B';
-            newGraph[nextRedX][nextRedY] = '.';
-            newGraph[nextBlueX][nextBlueY] = '.';
+            dfs(cnt + 1, newGraph, nextRedX, nextRedY, nextBlueX, nextBlueY);
 
         }
     }
@@ -97,14 +79,26 @@ public class Main {
         M = Integer.parseInt(st.nextToken());
 
         char[][] graph = new char[N][M];
+        int redX = 0;
+        int redY = 0;
+        int blueX = 0;
+        int blueY = 0;
         for (int i = 0; i < N; i++) {
             String str = br.readLine();
             for (int j = 0; j < M; j++) {
                 graph[i][j] = str.charAt(j);
+                if (graph[i][j] == 'B') {
+                    blueX = i;
+                    blueY = j;
+                }
+                if (graph[i][j] == 'R') {
+                    redX = i;
+                    redY = j;
+                }
             }
         }
 
-        dfs(0, graph);
+        dfs(1, graph, redX, redY, blueX, blueY);
 
         if (minCnt == Integer.MAX_VALUE) {
             System.out.println(-1);
