@@ -19,7 +19,7 @@ public class Main {
         int leader = Integer.parseInt(st.nextToken());
         int member = Integer.parseInt(st.nextToken());
 
-        int memberCnt = 0;
+        long memberCnt = 0;
         for (int cust : custs) {
             cust -= leader;
             if (cust <= 0) continue;
